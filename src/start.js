@@ -13,6 +13,8 @@ import {
     getCovidRouter,
     getMockDataRouter,
     getValidationTesRouter,
+    getAuthAPIRouter,
+    getViewRecipesRouter,
 } from './routes';
 import { rateLimiter, speedLimiter } from './utils/options-value';
 import { corsAllRequest, corsRequest } from './utils/cors-options';
@@ -97,6 +99,9 @@ function startServer({ port = process.env.PORT } = {}) {
     // Set view engine to EJS
     app.set('view engine', 'ejs');
     app.set('views', path.resolve(__dirname, 'views'));
+    // Add static file assets
+    app.use(express.static(path.resolve(__dirname, 'public')));
+
     // I mount my entire app to the /api route (or you could just do "/" if you want)
     // Use rate limiter and speed limiter for prevent brute force and spamming attacks
     app.options('*', corsAllRequest);
@@ -116,6 +121,23 @@ function startServer({ port = process.env.PORT } = {}) {
         speedLimiter,
         corsRequest,
         getValidationTesRouter(),
+    );
+
+    app.use(
+        '/api/v2',
+        rateLimiter,
+        speedLimiter,
+        corsRequest,
+        jsonBodyParser,
+        getAuthAPIRouter(),
+    );
+
+    app.use(
+        '/',
+        rateLimiter,
+        speedLimiter,
+        corsRequest,
+        getViewRecipesRouter(),
     );
 
     // add the generic error handler just in case errors are missed by middleware
