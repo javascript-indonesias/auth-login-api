@@ -1,0 +1,29 @@
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Auth Ninja</title>
+        <link rel="stylesheet" href="/styles.css" />
+        <link
+            rel="icon"
+            href="/favicon-32x32.png"
+            type="image/png"
+            sizes="32x32"
+        />
+    </head>
+    <body>
+        <nav>
+            <h1><a href="/">Ninja Smoothies</a></h1>
+            <!-- Conditional rendering halaman -->
+            <ul>
+                <% if (user && user.email) { %>
+                <li>Welcomes, <%= user.email %></li>
+                <li><a href="/logout">Log Out</a></li>
+                <% } else { %>
+                <li><a href="/login">Log in</a></li>
+                <li><a href="/signup" class="btn">Sign Up</a></li>
+                <% } %>
+            </ul>
+        </nav>
+    </body>
+</html>

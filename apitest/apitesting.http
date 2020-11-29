@@ -1,0 +1,55 @@
+### TEST REST API
+### Menggunakan Ekstensi VS Code REST Client
+
+### Data Covid
+GET http://localhost:3200/covid/data/pemerintah
+
+###
+GET http://localhost:3200/covid/data/matdroid
+
+### MATH CALC
+
+GET http://localhost:3200/api/v1/math/add?a=1&c=3
+
+###
+
+GET http://localhost:3200/api/v1/math/prime-pool?startrange=1&ranges=20
+
+###
+
+GET http://localhost:3200/api/v1/math/calc-prime?startrange=1&ranges=200
+
+###
+
+GET http://localhost:3200/api/v1/math/bubbles?lengthnum=5&maxnum=10
+
+### BLOG API
+
+GET http://localhost:3200/api/v1/blog/blog-list
+
+###
+
+GET http://localhost:3200/api/v1/blog/blogs/5f3cd47b7113e51f703ae7bc
+
+###
+
+POST http://localhost:3200/api/v1/blog/create-blog
+Content-Type: application/x-www-form-urlencoded
+
+title=Blog Sore Hari&snippet=Snippet singkat blog sore hari&text=Isi panjang dari blog saja
+
+# {
+#     "title": "Judul blog",
+#     "snippet": "Snippet singkat blog",
+#     "text": "Isi panjang dari blog"
+# }
+
+###
+DELETE  http://localhost:3200/api/v1/blog/blogs/5f3e4b0d7968394344eb9493
+
+### MOCK DATA
+
+GET http://localhost:3200/mockdata
+
+### TES KIRIM VALIDASI DENGAN EXPRESS VALIDATOR
+GET http://localhost:3200/tesvalidasi?paramA=7&stringB=<script>console.log('hello world')<script>&paramC=

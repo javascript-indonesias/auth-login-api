@@ -1,0 +1,69 @@
+<%- include('./partials/header.ejs') %>
+
+<form action="submit" id="formsubmit">
+    <h2>Sign Up</h2>
+    <label for="email">Email</label>
+    <!-- Pemberian name mempermudah mengakses variabel dari element forms -->
+    <input type="text" name="email" required />
+    <div class="email error"></div>
+
+    <label for="password">Password</label>
+    <input type="password" name="password" required />
+    <div class="password error"></div>
+    <button>Sign Up</button>
+</form>
+
+<script type="text/javascript">
+    const formEl = document.querySelector('#formsubmit');
+    const emailError = document.querySelector('.email.error');
+    const passwordError = document.querySelector('.password.error');
+
+    // Pindah halaman
+    function navigasiHalamanUtama() {
+        // Navigasi ke halaman utama routing
+        window.location.assign('/');
+    }
+
+    // Fungsi mengirim data dengan Fetch request
+    async function sendDataPost(email, password) {
+        try {
+            const response = await fetch('api/v1/auth/signup', {
+                method: 'POST',
+                body: JSON.stringify({
+                    email,
+                    password,
+                }),
+                headers: { 'Content-Type': 'application/json' },
+            });
+
+            const data = await response.json();
+            if (response.status >= 200 && response.status <= 210) {
+                // Jika sukses login, lanjutkan navigasi ke halaman utama
+                if (data.userid) {
+                    navigasiHalamanUtama();
+                }
+            } else {
+                console.log('Request gagal dilakukan', data);
+                if (data.error) {
+                    emailError.textContent = data.error.email;
+                    passwordError.textContent = data.error.password;
+                }
+            }
+        } catch (err) {
+            console.log('Gagal melakukan request', err);
+        }
+    }
+
+    formEl.addEventListener('submit', (event) => {
+        event.preventDefault();
+
+        emailError.textContent = '';
+        passwordError.textContent = '';
+
+        const stringEmail = formEl.email.value;
+        const stringPassword = formEl.password.value;
+        sendDataPost(stringEmail, stringPassword);
+    });
+</script>
+
+<%- include('./partials/footer.ejs') %>
