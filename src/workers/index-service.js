@@ -83,7 +83,7 @@ function runWorkerComparePassword(workerdata) {
     const arrayPromise = [];
     const promise = new Promise((resolve, reject) => {
         workerPoolComparePassword.runTask(workerdata, (errors, results) => {
-            const stringDebug = `${errors} ${results}`;
+            const stringDebug = `${errors} ${JSON.stringify(results)}`;
             logger.info(stringDebug);
             if (errors) {
                 reject(errors);
@@ -98,7 +98,13 @@ function runWorkerComparePassword(workerdata) {
     return Promise.allSettled(arrayPromise)
         .then((results) => {
             results.forEach((result) => logger.info(result.status));
-            return Promise.resolve(results);
+            const result = results[0];
+            if (result.status === 'fulfilled') {
+                return Promise.resolve(result.value);
+            }
+            return Promise.reject(
+                new Error('Gagal menandatangani access token'),
+            );
         })
         .catch((error) => {
             logger.error(error);
