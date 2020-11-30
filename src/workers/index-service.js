@@ -103,7 +103,7 @@ function runWorkerComparePassword(workerdata) {
                 return Promise.resolve(result.value);
             }
             return Promise.reject(
-                new Error('Gagal menandatangani access token'),
+                new Error('Gagal menemukan username dan password yang sesuai'),
             );
         })
         .catch((error) => {
@@ -128,7 +128,7 @@ function runWorkerSignJwt(workerdata) {
     const arrayPromise = [];
     const promise = new Promise((resolve, reject) => {
         workerPoolSignJwt.runTask(workerdata, (errors, results) => {
-            const stringDebug = `${errors} ${results}`;
+            const stringDebug = `${errors} ${JSON.stringify(results)}`;
             logger.info(stringDebug);
             if (errors) {
                 reject(errors);
@@ -143,7 +143,15 @@ function runWorkerSignJwt(workerdata) {
     return Promise.allSettled(arrayPromise)
         .then((results) => {
             results.forEach((result) => logger.info(result.status));
-            return Promise.resolve(results);
+            const result = results[0];
+            if (result.status === 'fulfilled') {
+                return Promise.resolve(result.value);
+            }
+            return Promise.reject(
+                new Error(
+                    'Gagal menandatangani username password untuk token pengguna',
+                ),
+            );
         })
         .catch((error) => {
             logger.error(error);

@@ -27,20 +27,22 @@ async function getSignedJwtWorkers(res) {
 
     try {
         const tokenData = await runWorkerSignJwt(workerdata);
-        if (tokenData.accesstoken) {
-            res.cookie('jwtToken', tokenData.accesstoken, {
-                httpOnly: true,
-                maxAge: maxAgeToken * 1000,
-            });
+        res.status(200).json({ tokenData });
 
-            res.status(200).json({
-                message: 'Sukses',
-                // eslint-disable-next-line no-underscore-dangle
-                userid: userItemDatabase._id,
-                email: userItemDatabase.email,
-                accessToken: tokenData.accessToken,
-            });
-        }
+        // if (tokenData.accesstoken) {
+        //     res.cookie('jwtToken', tokenData.accesstoken, {
+        //         httpOnly: true,
+        //         maxAge: maxAgeToken * 1000,
+        //     });
+
+        //     res.status(200).json({
+        //         message: 'Sukses',
+        //         // eslint-disable-next-line no-underscore-dangle
+        //         userid: userItemDatabase._id,
+        //         email: userItemDatabase.email,
+        //         accessToken: tokenData.accessToken,
+        //     });
+        // }
     } catch (err) {
         logger.error(`Error membuat akses token ${JSON.stringify(err)}`);
         const error = new Error('Error membuat akses token');
