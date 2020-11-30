@@ -62,23 +62,22 @@ async function comparePasswordUserWorker(workerdata, res) {
                 resultCompareData,
             )}`,
         );
-        res.status(200).json({ hasil_compare: resultCompareData.result });
 
-        // const isPasswordOk = resultCompareData.result;
-        // if (isPasswordOk === true) {
-        //     // Pengguna ada di database dan compare password berhasil
-        //     // Lanjutkan proses buat JWT
-        //     getSignedJwtWorkers(res);
-        // } else {
-        //     // Password salah dan tidak benar
-        //     const error = new Error('Kata sandi tidak sama');
-        //     error.status = 100;
-        //     const errorObject = handleErrorLoginDatabase(error);
-        //     res.status(400).json({
-        //         message: 'Kata sandi tidak cocok',
-        //         error: errorObject,
-        //     });
-        // }
+        const isPasswordOk = resultCompareData.result;
+        if (isPasswordOk === true) {
+            // Pengguna ada di database dan compare password berhasil
+            // Lanjutkan proses buat JWT
+            getSignedJwtWorkers(res);
+        } else {
+            // Password salah dan tidak benar
+            const error = new Error('Kata sandi tidak sama');
+            error.status = 100;
+            const errorObject = handleErrorLoginDatabase(error);
+            res.status(400).json({
+                message: 'Kata sandi tidak cocok',
+                error: errorObject,
+            });
+        }
     } catch (err) {
         logger.error(`Error compare password ${err.stack}`);
         const error = new Error('Kata sandi tidak sama');

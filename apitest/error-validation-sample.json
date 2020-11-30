@@ -1,0 +1,152 @@
+{
+    "arrayEmail": {
+        "errors": [
+            {
+                "value": "",
+                "msg": "Email tidak boleh kosong",
+                "param": "email",
+                "location": "body"
+            },
+            {
+                "value": "",
+                "msg": "Silahkan isi alamat email dengan benar",
+                "param": "email",
+                "location": "body"
+            }
+        ],
+        "context": {
+            "fields": [
+                "email"
+            ],
+            "locations": [
+                "body",
+                "cookies",
+                "headers",
+                "params",
+                "query"
+            ],
+            "stack": [
+                {
+                    "custom": false,
+                    "options": [
+                        null
+                    ]
+                },
+                {
+                    "negated": true,
+                    "options": [
+                        {
+                            "checkFalsy": true,
+                            "nullable": false,
+                            "ignore_whitespace": false
+                        }
+                    ],
+                    "message": "Email tidak boleh kosong"
+                },
+                {
+                    "negated": false,
+                    "options": [
+                        null
+                    ],
+                    "message": "Silahkan isi alamat email dengan benar"
+                },
+                {
+                    "custom": false,
+                    "options": []
+                }
+            ],
+            "optional": false,
+            "_errors": [
+                {
+                    "value": "",
+                    "msg": "Email tidak boleh kosong",
+                    "param": "email",
+                    "location": "body"
+                },
+                {
+                    "value": "",
+                    "msg": "Silahkan isi alamat email dengan benar",
+                    "param": "email",
+                    "location": "body"
+                }
+            ],
+            "dataMap": {}
+        }
+    },
+    "arrayPassword": {
+        "errors": [
+            {
+                "value": "",
+                "msg": "Kata sandi tidak boleh kosong",
+                "param": "password",
+                "location": "body"
+            },
+            {
+                "value": "",
+                "msg": "Kata sandi minimal 6 karakter",
+                "param": "password",
+                "location": "body"
+            }
+        ],
+        "context": {
+            "fields": [
+                "password"
+            ],
+            "locations": [
+                "body",
+                "cookies",
+                "headers",
+                "params",
+                "query"
+            ],
+            "stack": [
+                {
+                    "custom": false,
+                    "options": [
+                        null
+                    ]
+                },
+                {
+                    "negated": true,
+                    "options": [
+                        {
+                            "checkFalsy": true,
+                            "nullable": false,
+                            "ignore_whitespace": false
+                        }
+                    ],
+                    "message": "Kata sandi tidak boleh kosong"
+                },
+                {
+                    "negated": false,
+                    "options": [
+                        {
+                            "min": 6
+                        }
+                    ],
+                    "message": "Kata sandi minimal 6 karakter"
+                },
+                {
+                    "custom": false,
+                    "options": []
+                }
+            ],
+            "optional": false,
+            "_errors": [
+                {
+                    "value": "",
+                    "msg": "Kata sandi tidak boleh kosong",
+                    "param": "password",
+                    "location": "body"
+                },
+                {
+                    "value": "",
+                    "msg": "Kata sandi minimal 6 karakter",
+                    "param": "password",
+                    "location": "body"
+                }
+            ],
+            "dataMap": {}
+        }
+    }
+}
