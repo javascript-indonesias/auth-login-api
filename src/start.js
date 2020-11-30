@@ -19,6 +19,7 @@ import {
 import { rateLimiter, speedLimiter } from './utils/options-value';
 import { corsAllRequest, corsRequest } from './utils/cors-options';
 import { mode } from '../config';
+import { stopAllWorkerPool } from './workers/index-service';
 
 // here's our generic error handler for situations where we didn't handle
 // errors properly
@@ -65,6 +66,7 @@ function setupCloseOnExit(server) {
 
         if (options.exit) {
             if (options.exit) {
+                stopAllWorkerPool();
                 // eslint-disable-next-line no-process-exit
                 process.exit();
                 // throw new Error('Exit process.exit Node JS');

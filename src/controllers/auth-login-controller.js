@@ -27,29 +27,33 @@ async function getSignedJwtWorkers(res) {
 
     try {
         const tokenData = await runWorkerSignJwt(workerdata);
-        res.status(200).json({ tokenData });
 
-        // if (tokenData.accesstoken) {
-        //     res.cookie('jwtToken', tokenData.accesstoken, {
-        //         httpOnly: true,
-        //         maxAge: maxAgeToken * 1000,
-        //     });
+        if (tokenData.accesstoken) {
+            res.cookie('jwtToken', tokenData.accesstoken, {
+                httpOnly: true,
+                maxAge: maxAgeToken * 1000,
+                sameSite: 'lax',
+            });
 
-        //     res.status(200).json({
-        //         message: 'Sukses',
-        //         // eslint-disable-next-line no-underscore-dangle
-        //         userid: userItemDatabase._id,
-        //         email: userItemDatabase.email,
-        //         accessToken: tokenData.accessToken,
-        //     });
-        // }
+            res.status(200).json({
+                message: 'Sukses',
+                // eslint-disable-next-line no-underscore-dangle
+                userid: userItemDatabase.id,
+                email: userItemDatabase.email,
+                accessToken: tokenData.accessToken,
+            });
+        } else {
+            res.status(400).json({
+                message: 'Email dan kata sandi tidak cocok',
+            });
+        }
     } catch (err) {
         logger.error(`Error membuat akses token ${JSON.stringify(err)}`);
         const error = new Error('Error membuat akses token');
         error.status = 100;
         error.stack = err.stack;
         res.status(400).json({
-            message: 'Kata sandi tidak cocok',
+            message: 'Email dan kata sandi tidak cocok',
             error,
         });
     }
@@ -99,7 +103,15 @@ async function getUserDataFromDatabase(email, password, res) {
         const resultUserData = await getDataUser(email);
         logger.warn(JSON.stringify(resultUserData));
         if (resultUserData) {
-            userItemDatabase = resultUserData;
+            // Konversi nilai id dari ObjectID ke bentuk String
+            // eslint-disable-next-line no-underscore-dangle
+            const userID = resultUserData._id.toString();
+            userItemDatabase = {
+                email: resultUserData.email,
+                password: resultUserData.password,
+                id: userID,
+            };
+
             // komparasi password dari database
             const workerdata = {
                 typehash: HASH_TYPE_BCRYPT,

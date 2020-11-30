@@ -143,6 +143,7 @@ function runWorkerSignJwt(workerdata) {
     return Promise.allSettled(arrayPromise)
         .then((results) => {
             results.forEach((result) => logger.info(result.status));
+
             const result = results[0];
             if (result.status === 'fulfilled') {
                 return Promise.resolve(result.value);
@@ -196,12 +197,38 @@ function runWorkerVerifyJwt(workerdata) {
     return Promise.allSettled(arrayPromise)
         .then((results) => {
             results.forEach((result) => logger.info(result.status));
-            return Promise.resolve(results);
+
+            const result = results[0];
+            if (result.status === 'fulfilled') {
+                return Promise.resolve(result.value);
+            }
+            return Promise.reject(new Error('Data token tidak valid'));
         })
         .catch((error) => {
             logger.error(error);
             return Promise.reject(error);
         });
+}
+
+function stopAllWorkerPool() {
+    // Hentikan semua worker pool
+    if (workerPoolComparePassword !== null) {
+        workerPoolComparePassword.close();
+    }
+
+    if (workerPoolSignJwt !== null) {
+        workerPoolSignJwt.close();
+    }
+
+    if (workerPoolVerifyJwt !== null) {
+        workerPoolVerifyJwt.close();
+    }
+
+    if (workerPoolHashPassword !== null) {
+        workerPoolHashPassword.close();
+    }
+
+    logger.info('Close all worker pool threads');
 }
 
 function runWorkerPrimeService(workerData) {
@@ -289,6 +316,7 @@ export {
     runWorkerComparePassword,
     runWorkerSignJwt,
     runWorkerVerifyJwt,
+    stopAllWorkerPool,
     runWorkerPrimeService,
     runBubbleSortService,
     runWorkerPoolPrimeNumber,
