@@ -11,12 +11,16 @@ import {
     validatePasswordUser,
 } from '../services/login-validator';
 import {
-    handleErrorLogin,
+    handleErrorValidationLogin,
     handleErrorLoginDatabase,
 } from '../services/login-error-handler';
 import { getDataUser } from '../repository/auth-repo';
 
 let userItemDatabase = {};
+
+function handleResponseError(res, errObject, errCode = 400) {
+    res.status(errCode).json(errObject);
+}
 
 async function getSignedJwtWorkers(res) {
     // Buat signet JWT dengan worker
@@ -43,7 +47,7 @@ async function getSignedJwtWorkers(res) {
                 accessToken: tokenData.accessToken,
             });
         } else {
-            res.status(400).json({
+            handleResponseError(res, {
                 message: 'Email dan kata sandi tidak cocok',
             });
         }
@@ -52,7 +56,8 @@ async function getSignedJwtWorkers(res) {
         const error = new Error('Error membuat akses token');
         error.status = 100;
         error.stack = err.stack;
-        res.status(400).json({
+
+        handleResponseError(res, {
             message: 'Email dan kata sandi tidak cocok',
             error,
         });
@@ -79,7 +84,8 @@ async function comparePasswordUserWorker(workerdata, res) {
             const error = new Error('Kata sandi tidak sama');
             error.status = 100;
             const errorObject = handleErrorLoginDatabase(error);
-            res.status(400).json({
+
+            handleResponseError(res, {
                 message: 'Kata sandi tidak cocok',
                 error: errorObject,
             });
@@ -90,7 +96,8 @@ async function comparePasswordUserWorker(workerdata, res) {
         error.status = 100;
         error.stack = err;
         const errorObject = handleErrorLoginDatabase(error);
-        res.status(400).json({
+
+        handleResponseError(res, {
             message: 'Kata sandi tidak cocok',
             error: errorObject,
         });
@@ -123,7 +130,8 @@ async function getUserDataFromDatabase(email, password, res) {
     } catch (err) {
         logger.error(`Error query login database ${err.stack}`);
         const errorObject = handleErrorLoginDatabase(err);
-        res.status(400).json({
+
+        handleResponseError(res, {
             message: 'Gagal mengambil data pengguna',
             error: errorObject,
         });
@@ -131,8 +139,6 @@ async function getUserDataFromDatabase(email, password, res) {
 }
 
 async function authLoginController(req, res) {
-    let errorObject = {};
-
     // Validasi email dan password
     try {
         const emailValidationResult = await validateEmailUser(req);
@@ -142,13 +148,13 @@ async function authLoginController(req, res) {
             emailValidationResult.errors.length > 0 &&
             passwordValidationResult.errors.length > 0
         ) {
-            errorObject = handleErrorLogin({
+            const errorObject = handleErrorValidationLogin({
                 erremail: emailValidationResult.errors,
                 errpasword: passwordValidationResult.errors,
             });
 
             // Kirim response balikan error
-            res.status(400).json({
+            handleResponseError(res, {
                 message: 'Gagal mengolah permintaan',
                 error: errorObject,
             });
@@ -158,7 +164,8 @@ async function authLoginController(req, res) {
         }
     } catch (err) {
         logger.error(`Error data ${JSON.stringify(err.stack)}`);
-        res.status(400).json({
+
+        handleResponseError(res, {
             status: false,
             message: 'Ditemukan kesalahan dalam mengelola request',
             errors: JSON.stringify(err.stack),

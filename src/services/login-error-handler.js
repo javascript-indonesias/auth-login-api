@@ -1,6 +1,6 @@
 import logger from '../utils/config-winston';
 
-function handleErrorLogin(errorObject) {
+function handleErrorValidationLogin(errorObject) {
     const {
         erremail: arrayErrEmail,
         errpassword: arrayErrPassword,
@@ -46,8 +46,8 @@ function handleErrorLoginDatabase(error) {
     return errObjectParsed;
 }
 
-function handleErrorLoginSignup(error) {
-    const errorMessage = error.message;
+function handleErrorSignup(error) {
+    const errorMessage = error.message.toLowerCase();
     const errorObject = { email: '', password: '' };
 
     // Jika mongoose menemukan ada data email yang duplikat
@@ -66,17 +66,30 @@ function handleErrorLoginSignup(error) {
     }
 
     // Login email salah
-    if (errorMessage.includes('Email salah dan tidak ditemukan')) {
+    if (errorMessage.includes('alamat email')) {
         errorObject.email = errorMessage;
     }
 
     // Login password salah
-    if (errorMessage.includes('Password salah dan tidak cocok')) {
+    if (errorMessage.includes('kata sandi')) {
         errorObject.password = errorMessage;
+    }
+
+    if (
+        errorMessage.includes('gagal hashed') ||
+        errorMessage.includes('simpan database')
+    ) {
+        errorObject.email = 'Ditemukan kesalahan dalam menyimpan data pengguna';
+        errorObject.password =
+            'Ditemukan kesalahan dalam menyimpan data pengguna';
     }
 
     logger.error(error.stack);
     return errorObject;
 }
 
-export { handleErrorLogin, handleErrorLoginSignup, handleErrorLoginDatabase };
+export {
+    handleErrorValidationLogin,
+    handleErrorSignup,
+    handleErrorLoginDatabase,
+};

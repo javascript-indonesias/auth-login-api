@@ -50,7 +50,13 @@ function runWorkerHashPassword(workerdata) {
     return Promise.allSettled(arrayPromise)
         .then((results) => {
             results.forEach((result) => logger.info(result.status));
-            return Promise.resolve(results);
+            const result = results[0];
+            if (result.status === 'fulfilled') {
+                return Promise.resolve(result.value);
+            }
+            return Promise.reject(
+                new Error('Gagal melakukan validasi kata sandi'),
+            );
         })
         .catch((error) => {
             logger.error(error);

@@ -42,10 +42,10 @@
     "http-proxy-middleware": "^1.0.6",
     "jsonwebtoken": "^8.5.1",
     "loglevel": "^1.7.1",
-    "mongoose": "^5.10.17",
+    "mongoose": "^5.11.1",
     "morgan": "^1.10.0",
     "nodemon": "^2.0.6",
-    "validator": "^13.1.17",
+    "validator": "^13.5.1",
     "winston": "^3.3.3"
   },
   "devDependencies": {
