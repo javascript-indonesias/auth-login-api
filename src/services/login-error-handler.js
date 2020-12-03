@@ -46,14 +46,37 @@ function handleErrorLoginDatabase(error) {
     return errObjectParsed;
 }
 
+function handleErrorValidationSignup(errorObject) {
+    const {
+        erremail: arrayErrEmail,
+        errpassword: arrayErrPassword,
+    } = errorObject;
+    const errObjectParsed = { email: '', password: '' };
+
+    if (arrayErrEmail.length > 0) {
+        let stringMessage = '';
+        arrayErrEmail.forEach((errvalue) => {
+            const { msg } = errvalue;
+            stringMessage += `${msg}. `;
+        });
+        errObjectParsed.email = stringMessage;
+    }
+
+    if (arrayErrPassword.length > 0) {
+        let stringMessage = '';
+        arrayErrPassword.forEach((errvalue) => {
+            const { msg } = errvalue;
+            stringMessage += `${msg}. `;
+        });
+        errObjectParsed.password = stringMessage;
+    }
+
+    return errObjectParsed;
+}
+
 function handleErrorSignup(error) {
     const errorMessage = error.message.toLowerCase();
     const errorObject = { email: '', password: '' };
-
-    // Jika mongoose menemukan ada data email yang duplikat
-    if (error.code === 11000) {
-        errorObject.email = 'Email telah dipakai untuk registrasi';
-    }
 
     if (errorMessage.includes('useritem validation failed')) {
         const listObjectErrorValue = Object.values(error.errors);
@@ -62,17 +85,16 @@ function handleErrorSignup(error) {
             const { properties } = errValue;
             errorObject[properties.path] = properties.message;
         });
-        logger.warn(JSON.stringify(errorObject));
     }
 
     // Login email salah
     if (errorMessage.includes('alamat email')) {
-        errorObject.email = errorMessage;
+        errorObject.email = error.message;
     }
 
     // Login password salah
     if (errorMessage.includes('kata sandi')) {
-        errorObject.password = errorMessage;
+        errorObject.password = error.message;
     }
 
     if (
@@ -84,12 +106,21 @@ function handleErrorSignup(error) {
             'Ditemukan kesalahan dalam menyimpan data pengguna';
     }
 
-    logger.error(error.stack);
+    // Jika mongoose menemukan ada data email yang duplikat
+    if (error.code === 11000) {
+        errorObject.email = 'Email telah dipakai untuk registrasi';
+        errorObject.password = '';
+    }
+
+    logger.error(
+        `Gagal Signup ${JSON.stringify(errorObject)} - ${errorMessage}`,
+    );
     return errorObject;
 }
 
 export {
     handleErrorValidationLogin,
-    handleErrorSignup,
     handleErrorLoginDatabase,
+    handleErrorSignup,
+    handleErrorValidationSignup,
 };

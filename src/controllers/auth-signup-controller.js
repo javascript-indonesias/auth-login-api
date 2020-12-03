@@ -7,7 +7,10 @@ import {
     validatePasswordUser,
 } from '../services/login-validator';
 
-import { handleErrorSignup } from '../services/login-error-handler';
+import {
+    handleErrorSignup,
+    handleErrorValidationSignup,
+} from '../services/login-error-handler';
 import { maxAgeToken, HASH_TYPE_BCRYPT } from '../utils/konstans-data';
 import logger from '../utils/config-winston';
 import { createUserDb } from '../repository/auth-repo';
@@ -25,10 +28,7 @@ async function createTokenJWTLogin(usermodel, res) {
         secretjwt,
     };
 
-    logger.info(`User model data pengguna ${JSON.stringify(usermodel)}`);
-
     let tokenData = {};
-
     try {
         tokenData = await runWorkerSignJwt(workerdata);
     } catch (err) {
@@ -87,8 +87,13 @@ async function createDataPengguna(email, password, res) {
         } catch (err) {
             resultSaveDb = null;
             logger.error(
-                `Gagal menyimpan data pengguna ${JSON.stringify(err.stack)}`,
+                `Gagal menyimpan data pengguna ${JSON.stringify(
+                    err.stack,
+                )} CODE ERROR ${err.code}`,
             );
+            const errorData = new Error('Gagal simpan database');
+            errorData.code = err.code;
+            errObject = handleErrorSignup(errorData);
         }
     } else {
         // Gagal membuat hashed password
@@ -98,9 +103,6 @@ async function createDataPengguna(email, password, res) {
     if (resultSaveDb) {
         // Sukses simpan database, lanjutkan buat token JWT
         createTokenJWTLogin(resultSaveDb, res);
-    } else {
-        errObject = handleErrorSignup(new Error('Gagal simpan database'));
-        logger.error(`Gagal menyimpan data pengguna di database}`);
     }
 
     // Kirim error jika terdapat error
@@ -116,22 +118,19 @@ async function authSignupController(req, res) {
         const emailValidResult = await validateEmailUser(req);
         const passwordValidResult = await validatePasswordUser(req);
 
-        if (emailValidResult.errors.length > 0) {
-            // Terjadi kesalahan validasi email
-            errorObject = handleErrorSignup(
-                new Error('Alamat email tidak valid dan salah'),
-            );
+        if (
+            emailValidResult.errors.length > 0 ||
+            passwordValidResult.errors.length > 0
+        ) {
+            errorObject = handleErrorValidationSignup({
+                erremail: emailValidResult.errors,
+                errpassword: passwordValidResult.errors,
+            });
+
             handleResponseError(res, errorObject);
-        } else if (passwordValidResult.errors.length > 0) {
-            // Terjadi kesalahan validasi password
-            errorObject = handleErrorSignup(
-                new Error('Kata sandi tidak valid dan salah'),
-            );
-            handleResponseError(res, errorObject);
-        } else {
-            errorObject = null;
         }
 
+        // Jika tidak ditemui error validasi lanjutkan ke proses selanjutnya
         if (errorObject === null) {
             // Buat insert ke database
             const { email, password } = req.body;
@@ -141,7 +140,7 @@ async function authSignupController(req, res) {
         logger.error(`Error data ${JSON.stringify(err.stack)}`);
         handleResponseError(res, {
             status: false,
-            message: 'Ditemukan kesalahan dalam mengelola request',
+            message: 'Ditemukan kesalahan dalam mengelola permintaan data',
             errors: JSON.stringify(err.stack),
         });
     }

@@ -73,6 +73,6 @@ POST http://localhost:3200/api/v2/auth/signup
 Content-Type: application/json
 
 {
-    "email": "kucing@mail.com",
-    "password": "123456"
+    "email": "kucing1@mail.com",
+    "password": "1234567"
 }

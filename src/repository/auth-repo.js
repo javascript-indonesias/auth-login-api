@@ -1,4 +1,3 @@
-import logger from '../utils/config-winston';
 import UserItem from './model/user-model';
 import { generateMixedID } from '../utils/id-generators';
 
@@ -12,17 +11,16 @@ async function createUser(useritem) {
         });
         return Promise.resolve(userdb);
     } catch (err) {
-        logger.error(JSON.stringify(err));
         return Promise.reject(err);
     }
 }
 
 async function createUserDb(useritem) {
-    const iduser = await generateMixedID();
+    const userids = await generateMixedID();
     const { email, password } = useritem;
 
     const userItem = new UserItem({
-        iduser,
+        userids,
         email,
         password,
     });
@@ -33,7 +31,6 @@ async function createUserDb(useritem) {
             return Promise.resolve(result);
         })
         .catch((err) => {
-            logger.error(`Error save user to database ${JSON.stringify(err)}`);
             return Promise.reject(err);
         });
 }
@@ -48,7 +45,6 @@ async function getDataUser(email) {
             new Error(`Email pengguna ${email} tidak ditemukan`),
         );
     } catch (err) {
-        logger.error(`Email pengguna ${email} tidak ditemukan`);
         return Promise.reject(
             new Error(
                 `Email pengguna ${email} tidak ditemukan ${JSON.stringify(
