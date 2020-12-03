@@ -8,7 +8,7 @@ function createJwtToken(usermodel, secretjwt) {
     // Kadaluarsa dalam 1 jam / 60 menit
     return new Promise((resolve, reject) => {
         jwt.sign(
-            { id: usermodel.id },
+            { id: usermodel.userids },
             `${secretjwt}`,
             {
                 algorithm: 'HS512',

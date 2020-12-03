@@ -62,7 +62,18 @@
 
         const stringEmail = formEl.email.value;
         const stringPassword = formEl.password.value;
-        sendDataPost(stringEmail, stringPassword);
+
+        // Sebelum kirim lakukan validasi dahulu
+        if (stringEmail) {
+            if (stringPassword) {
+                sendDataPost(stringEmail, stringPassword);
+            } else {
+                passwordError.textContent =
+                    'Silahkan isi kata sandi dengan benar';
+            }
+        } else {
+            emailError.textContent = 'Silahkan isi email dengan benar';
+        }
     });
 </script>
 

@@ -42,7 +42,7 @@ async function getSignedJwtWorkers(res) {
             res.status(200).json({
                 message: 'Sukses',
                 // eslint-disable-next-line no-underscore-dangle
-                userid: userItemDatabase.id,
+                userid: userItemDatabase.userids,
                 email: userItemDatabase.email,
                 accessToken: tokenData.accesstoken,
             });
@@ -114,11 +114,11 @@ async function getUserDataFromDatabase(email, password, res) {
         if (resultUserData) {
             // Konversi nilai id dari ObjectID ke bentuk String
             // eslint-disable-next-line no-underscore-dangle
-            const userID = resultUserData._id.toString();
+            // const userID = resultUserData._id.toString();
             userItemDatabase = {
                 email: resultUserData.email,
                 password: resultUserData.password,
-                id: userID,
+                id: resultUserData.userids,
             };
 
             // komparasi password dari database

@@ -105,14 +105,14 @@ async function createDataPengguna(email, password, res) {
         createTokenJWTLogin(resultSaveDb, res);
     }
 
-    // Kirim error jika terdapat error
+    // Kirim response error jika terdapat error
     if (errObject.email || errObject.password) {
         handleResponseError(res, errObject);
     }
 }
 
 async function authSignupController(req, res) {
-    // Proses login di bagian proses signup
+    // Proses pendaftaran di bagian proses signup
     let errorObject = null;
     try {
         const emailValidResult = await validateEmailUser(req);
