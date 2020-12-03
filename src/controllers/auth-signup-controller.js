@@ -25,6 +25,8 @@ async function createTokenJWTLogin(usermodel, res) {
         secretjwt,
     };
 
+    logger.info(`User model data pengguna ${JSON.stringify(usermodel)}`);
+
     let tokenData = {};
 
     try {

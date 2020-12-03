@@ -65,5 +65,14 @@ Content-Type: application/json
 
 {
     "email": "kucing@mail.com",
+    "password": "1234567"
+}
+
+### TES KIRIM SIGNUP DATA
+POST http://localhost:3200/api/v2/auth/signup
+Content-Type: application/json
+
+{
+    "email": "kucing@mail.com",
     "password": "123456"
 }

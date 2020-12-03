@@ -44,7 +44,7 @@ async function getSignedJwtWorkers(res) {
                 // eslint-disable-next-line no-underscore-dangle
                 userid: userItemDatabase.id,
                 email: userItemDatabase.email,
-                accessToken: tokenData.accessToken,
+                accessToken: tokenData.accesstoken,
             });
         } else {
             handleResponseError(res, {
@@ -81,12 +81,14 @@ async function comparePasswordUserWorker(workerdata, res) {
             getSignedJwtWorkers(res);
         } else {
             // Password salah dan tidak benar
-            const error = new Error('Kata sandi tidak sama');
+            const error = new Error(
+                'Kata sandi tidak cocok dan sesuai dengan akun ini',
+            );
             error.status = 100;
             const errorObject = handleErrorLoginDatabase(error);
 
             handleResponseError(res, {
-                message: 'Kata sandi tidak cocok',
+                message: 'Kata sandi tidak cocok dan sesuai dengan akun ini',
                 error: errorObject,
             });
         }
@@ -144,13 +146,23 @@ async function authLoginController(req, res) {
         const emailValidationResult = await validateEmailUser(req);
         const passwordValidationResult = await validatePasswordUser(req);
 
+        logger.info(
+            `Hasil validasi email ${JSON.stringify(emailValidationResult)}`,
+        );
+
+        logger.info(
+            `Hasil validasi password ${JSON.stringify(
+                passwordValidationResult,
+            )}`,
+        );
+
         if (
-            emailValidationResult.errors.length > 0 &&
+            emailValidationResult.errors.length > 0 ||
             passwordValidationResult.errors.length > 0
         ) {
             const errorObject = handleErrorValidationLogin({
                 erremail: emailValidationResult.errors,
-                errpasword: passwordValidationResult.errors,
+                errpassword: passwordValidationResult.errors,
             });
 
             // Kirim response balikan error
