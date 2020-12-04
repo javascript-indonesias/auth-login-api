@@ -17,11 +17,13 @@ import { createUserDb } from '../repository/auth-repo';
 import { secretjwt } from '../../config';
 
 function handleResponseError(res, errobject, errCode = 400) {
-    // Kirim pesan balikan error
+    // Jika terjadi error, kirim pesan balikan dengan response ini
+    const errObject = errobject;
+    errObject.status = 'Gagal';
     res.status(errCode).json(errobject);
 }
 
-async function createTokenJWTLogin(usermodel, res) {
+async function createJWTSignUp(usermodel, res) {
     // Buat sign jwt dari password dan user id
     const workerdata = {
         usermodel,
@@ -47,9 +49,9 @@ async function createTokenJWTLogin(usermodel, res) {
         res.status(200).json({
             message: 'Sukses',
             // eslint-disable-next-line no-underscore-dangle
-            userid: usermodel.userids,
+            id: usermodel.id,
             email: usermodel.email,
-            accessToken: tokenData.accessToken,
+            accessToken: tokenData.accesstoken,
         });
     } else {
         handleResponseError({ message: 'Gagal membuat data akses pengguna' });
@@ -59,8 +61,8 @@ async function createTokenJWTLogin(usermodel, res) {
 async function createDataPengguna(email, password, res) {
     // Buat data password dengvan di hash
     let errObject = {};
-    let resultSaveDb = null;
     let passwordHashed = '';
+    let userItemDatabase = null;
 
     const workerData = {};
     workerData.typehash = HASH_TYPE_BCRYPT;
@@ -80,12 +82,17 @@ async function createDataPengguna(email, password, res) {
     if (email && passwordHashed && passwordHashed.length > 5) {
         // Lanjutkan menyimpan ke database
         try {
-            resultSaveDb = await createUserDb({
+            const resultSaveDb = await createUserDb({
                 email,
                 password: passwordHashed,
             });
+            userItemDatabase = {
+                email: resultSaveDb.email,
+                password: resultSaveDb.password,
+                id: resultSaveDb.userids,
+            };
         } catch (err) {
-            resultSaveDb = null;
+            userItemDatabase = null;
             logger.error(
                 `Gagal menyimpan data pengguna ${JSON.stringify(
                     err.stack,
@@ -100,14 +107,14 @@ async function createDataPengguna(email, password, res) {
         errObject = handleErrorSignup(new Error('Gagal hashed password'));
     }
 
-    if (resultSaveDb) {
+    if (userItemDatabase) {
         // Sukses simpan database, lanjutkan buat token JWT
-        createTokenJWTLogin(resultSaveDb, res);
+        createJWTSignUp(userItemDatabase, res);
     }
 
     // Kirim response error jika terdapat error
     if (errObject.email || errObject.password) {
-        handleResponseError(res, errObject);
+        handleResponseError(res, { error: errObject });
     }
 }
 
@@ -127,7 +134,7 @@ async function authSignupController(req, res) {
                 errpassword: passwordValidResult.errors,
             });
 
-            handleResponseError(res, errorObject);
+            handleResponseError(res, { error: errorObject });
         }
 
         // Jika tidak ditemui error validasi lanjutkan ke proses selanjutnya
@@ -139,7 +146,6 @@ async function authSignupController(req, res) {
     } catch (err) {
         logger.error(`Error data ${JSON.stringify(err.stack)}`);
         handleResponseError(res, {
-            status: false,
             message: 'Ditemukan kesalahan dalam mengelola permintaan data',
             errors: JSON.stringify(err.stack),
         });

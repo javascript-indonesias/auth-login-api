@@ -18,11 +18,14 @@ import { getDataUser } from '../repository/auth-repo';
 
 let userItemDatabase = {};
 
-function handleResponseError(res, errObject, errCode = 400) {
-    res.status(errCode).json(errObject);
+function handleResponseError(res, errobject, errCode = 400) {
+    // Jika terjadi error dalam pengolahan data, kirim dengan response ini
+    const errorObjectData = errobject;
+    errorObjectData.status = 'Gagal';
+    res.status(errCode).json(errorObjectData);
 }
 
-async function getSignedJwtWorkers(res) {
+async function createJWTLogin(res) {
     // Buat signet JWT dengan worker
     const workerdata = {
         usermodel: userItemDatabase,
@@ -41,8 +44,7 @@ async function getSignedJwtWorkers(res) {
 
             res.status(200).json({
                 message: 'Sukses',
-                // eslint-disable-next-line no-underscore-dangle
-                userid: userItemDatabase.userids,
+                id: userItemDatabase.id,
                 email: userItemDatabase.email,
                 accessToken: tokenData.accesstoken,
             });
@@ -78,7 +80,7 @@ async function comparePasswordUserWorker(workerdata, res) {
         if (isPasswordOk === true) {
             // Pengguna ada di database dan compare password berhasil
             // Lanjutkan proses buat JWT
-            getSignedJwtWorkers(res);
+            createJWTLogin(res);
         } else {
             // Password salah dan tidak benar
             const error = new Error(
@@ -178,7 +180,6 @@ async function authLoginController(req, res) {
         logger.error(`Error data ${JSON.stringify(err.stack)}`);
 
         handleResponseError(res, {
-            status: false,
             message: 'Ditemukan kesalahan dalam mengelola request',
             errors: JSON.stringify(err.stack),
         });
