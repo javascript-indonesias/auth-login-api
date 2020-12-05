@@ -120,25 +120,26 @@ async function createDataPengguna(email, password, res) {
 
 async function authSignupController(req, res) {
     // Proses pendaftaran di bagian proses signup
-    let errorObject = null;
+    let errorValidationObject = null;
     try {
         const emailValidResult = await validateEmailUser(req);
         const passwordValidResult = await validatePasswordUser(req);
 
+        // Terdapat error validasi data
         if (
             emailValidResult.errors.length > 0 ||
             passwordValidResult.errors.length > 0
         ) {
-            errorObject = handleErrorValidationSignup({
+            errorValidationObject = handleErrorValidationSignup({
                 erremail: emailValidResult.errors,
                 errpassword: passwordValidResult.errors,
             });
 
-            handleResponseError(res, { error: errorObject });
+            handleResponseError(res, { error: errorValidationObject });
         }
 
         // Jika tidak ditemui error validasi lanjutkan ke proses selanjutnya
-        if (errorObject === null) {
+        if (errorValidationObject === null) {
             // Buat insert ke database
             const { email, password } = req.body;
             createDataPengguna(email, password, res);

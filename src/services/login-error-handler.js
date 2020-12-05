@@ -1,5 +1,9 @@
 import logger from '../utils/config-winston';
 
+/**
+ * Error handling jika validasi proses login terjadi kesalahan
+ * Untuk nilai username email dan password yang tidak valid
+ */
 function handleErrorValidationLogin(errorObject) {
     const {
         erremail: arrayErrEmail,
@@ -28,6 +32,10 @@ function handleErrorValidationLogin(errorObject) {
     return errObjectParsed;
 }
 
+/**
+ * Error handling jika username dan password tidak cocok
+ * atau data pengguna tidak ditemukan di dalam database
+ */
 function handleErrorLoginDatabase(error) {
     const errMessage = error.message;
     const errObjectParsed = { email: '', password: '' };
@@ -46,6 +54,10 @@ function handleErrorLoginDatabase(error) {
     return errObjectParsed;
 }
 
+/**
+ * Jika terjadi kesalahan dalam validasi data yang diterima dari front end
+ * Pada proses SignUp
+ */
 function handleErrorValidationSignup(errorObject) {
     const {
         erremail: arrayErrEmail,
@@ -74,6 +86,10 @@ function handleErrorValidationSignup(errorObject) {
     return errObjectParsed;
 }
 
+/**
+ * Error handling jika terjadi kesalahan dalam alur proses signup
+ * Terutama untuk pembuatan password, validasi JWT, username salah, dst
+ */
 function handleErrorSignup(error) {
     const errorMessage = error.message.toLowerCase();
     const errorObject = { email: '', password: '' };
@@ -85,16 +101,6 @@ function handleErrorSignup(error) {
             const { properties } = errValue;
             errorObject[properties.path] = properties.message;
         });
-    }
-
-    // Login email salah
-    if (errorMessage.includes('alamat email')) {
-        errorObject.email = error.message;
-    }
-
-    // Login password salah
-    if (errorMessage.includes('kata sandi')) {
-        errorObject.password = error.message;
     }
 
     if (
