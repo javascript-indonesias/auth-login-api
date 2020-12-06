@@ -4,7 +4,11 @@ import {
 } from '../workers/index-service';
 import logger from '../utils/config-winston';
 import { secretjwt } from '../../config';
-import { maxAgeToken, HASH_TYPE_BCRYPT } from '../utils/konstans-data';
+import {
+    maxAgeToken,
+    HASH_TYPE_BCRYPT,
+    HASH_TYPE_ARGON,
+} from '../utils/konstans-data';
 
 import {
     validateEmailUser,
@@ -46,7 +50,7 @@ async function createJWTLogin(res) {
                 message: 'Sukses',
                 id: userItemDatabase.id,
                 email: userItemDatabase.email,
-                accessToken: tokenData.accesstoken,
+                accesstoken: tokenData.accesstoken,
             });
         } else {
             handleResponseError(res, {
@@ -125,7 +129,7 @@ async function getUserDataFromDatabase(email, password, res) {
 
             // komparasi password dari database
             const workerdata = {
-                typehash: HASH_TYPE_BCRYPT,
+                typehash: HASH_TYPE_ARGON,
                 plainpass: password,
                 passhashdb: resultUserData.password,
             };

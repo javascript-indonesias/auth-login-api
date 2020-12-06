@@ -11,7 +11,11 @@ import {
     handleErrorSignup,
     handleErrorValidationSignup,
 } from '../services/login-error-handler';
-import { maxAgeToken, HASH_TYPE_BCRYPT } from '../utils/konstans-data';
+import {
+    maxAgeToken,
+    HASH_TYPE_BCRYPT,
+    HASH_TYPE_ARGON,
+} from '../utils/konstans-data';
 import logger from '../utils/config-winston';
 import { createUserDb } from '../repository/auth-repo';
 import { secretjwt } from '../../config';
@@ -51,7 +55,7 @@ async function createJWTSignUp(usermodel, res) {
             // eslint-disable-next-line no-underscore-dangle
             id: usermodel.id,
             email: usermodel.email,
-            accessToken: tokenData.accesstoken,
+            accesstoken: tokenData.accesstoken,
         });
     } else {
         handleResponseError({ message: 'Gagal membuat data akses pengguna' });
@@ -65,7 +69,7 @@ async function createDataPengguna(email, password, res) {
     let userItemDatabase = null;
 
     const workerData = {};
-    workerData.typehash = HASH_TYPE_BCRYPT;
+    workerData.typehash = HASH_TYPE_ARGON;
     workerData.plainpassword = password;
 
     // Jalankan hash di worker thread

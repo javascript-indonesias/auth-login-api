@@ -23,7 +23,7 @@ parentPort.on('message', (workerdata) => {
     const { tokenjwt, secretjwt } = workerdata;
     verifyJwtToken(tokenjwt, secretjwt)
         .then((decodedtoken) => {
-            parentPort.postMessage(decodedtoken);
+            parentPort.postMessage({ token: decodedtoken, error: null });
         })
         .catch((err) => {
             parentPort.postMessage({ error: err });

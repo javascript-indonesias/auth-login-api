@@ -12,10 +12,17 @@ const rateLimiter = rateLimit({
 // Turunkan kecepatan response setelah request pertama
 // Dalam rentang waktu 30 detik
 // Pada endpoint api yang sama
+// Biasanya di setel dengan penurunan kecepatan 500ms
 const speedLimiter = slowDown({
     windowMs: 30 * 1000,
     delayAfter: 1,
     delayMs: 500,
 });
 
-export { rateLimiter, speedLimiter };
+const speedLimiterView = slowDown({
+    windowMs: 30 * 1000,
+    delayAfter: 1,
+    delayMs: 200,
+});
+
+export { rateLimiter, speedLimiter, speedLimiterView };

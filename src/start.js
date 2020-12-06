@@ -8,18 +8,16 @@ import cookieParser from 'cookie-parser';
 import 'express-async-errors';
 import logger from './utils/config-winston';
 // all the routes for my app are retrieved from the src/routes/index.js module
+import { getAuthAPIRouter, getViewRecipesRouter } from './routes';
 import {
-    getRoutes,
-    getCovidRouter,
-    getMockDataRouter,
-    getValidationTesRouter,
-    getAuthAPIRouter,
-    getViewRecipesRouter,
-} from './routes';
-import { rateLimiter, speedLimiter } from './utils/options-value';
-import { corsAllRequest, corsRequest } from './utils/cors-options';
+    rateLimiter,
+    speedLimiter,
+    speedLimiterView,
+} from './utils/options-value';
+import { corsRequest } from './utils/cors-options';
 import { mode } from '../config';
 import { stopAllWorkerPool } from './workers/index-service';
+import { checkStatusLoginUserMiddleware } from './middlewares/auth-middleware';
 
 // here's our generic error handler for situations where we didn't handle
 // errors properly
@@ -90,8 +88,6 @@ function startServer({ port = process.env.PORT } = {}) {
     const app = express();
     // Enable if your Express JS behind Reverse Proxy
     app.set('trust proxy', 1);
-    // Add helmet js for basic hardening security
-    app.use(helmet());
     // Debugging purpose with morgan
     app.use(morgan('combined', { stream: logger.stream }));
     // Middleware for http body
@@ -106,39 +102,26 @@ function startServer({ port = process.env.PORT } = {}) {
 
     // I mount my entire app to the /api route (or you could just do "/" if you want)
     // Use rate limiter and speed limiter for prevent brute force and spamming attacks
-    app.options('*', corsAllRequest);
+    // app.options('*', corsAllRequest);
+    // Add helmet js for basic hardening security
+    // Router untuk REST API backend
     app.use(
         '/api/v1',
         rateLimiter,
         speedLimiter,
         corsRequest,
         jsonBodyParser,
-        getRoutes(),
-    );
-    app.use('/covid', rateLimiter, speedLimiter, corsRequest, getCovidRouter());
-    app.use('/', rateLimiter, speedLimiter, corsRequest, getMockDataRouter());
-    app.use(
-        '/',
-        rateLimiter,
-        speedLimiter,
-        corsRequest,
-        getValidationTesRouter(),
-    );
-
-    app.use(
-        '/api/v2',
-        rateLimiter,
-        speedLimiter,
-        corsRequest,
-        jsonBodyParser,
+        helmet(),
         getAuthAPIRouter(),
     );
 
+    // Router untuk tampilan View
     app.use(
         '/',
         rateLimiter,
-        speedLimiter,
+        speedLimiterView,
         corsRequest,
+        checkStatusLoginUserMiddleware,
         getViewRecipesRouter(),
     );
 

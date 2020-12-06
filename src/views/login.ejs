@@ -13,7 +13,7 @@
     <button>Log In</button>
 </form>
 
-<script type="text/javascript">
+<script type="text/javascript" defer>
     const formEl = document.querySelector('#formsubmit');
     const emailError = document.querySelector('.email.error');
     const passwordError = document.querySelector('.password.error');
@@ -39,7 +39,7 @@
             const data = await response.json();
             if (response.status >= 200 && response.status <= 210) {
                 // Jika sukses login, lanjutkan navigasi ke halaman utama
-                if (data.userid) {
+                if (data.id) {
                     navigasiHalamanUtama();
                 }
             } else {

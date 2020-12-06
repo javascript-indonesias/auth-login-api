@@ -35,7 +35,9 @@ function runWorkerHashPassword(workerdata) {
     const arrayPromise = [];
     const promise = new Promise((resolve, reject) => {
         workerPoolHashPassword.runTask(workerdata, (errors, results) => {
-            const stringDebug = `${errors} ${results}`;
+            const stringDebug = `Error ${errors} Result ${JSON.stringify(
+                results,
+            )}`;
             logger.info(stringDebug);
             if (errors) {
                 reject(errors);
@@ -89,8 +91,6 @@ function runWorkerComparePassword(workerdata) {
     const arrayPromise = [];
     const promise = new Promise((resolve, reject) => {
         workerPoolComparePassword.runTask(workerdata, (errors, results) => {
-            const stringDebug = `${errors} ${JSON.stringify(results)}`;
-            logger.info(stringDebug);
             if (errors) {
                 reject(errors);
             } else {
@@ -134,8 +134,6 @@ function runWorkerSignJwt(workerdata) {
     const arrayPromise = [];
     const promise = new Promise((resolve, reject) => {
         workerPoolSignJwt.runTask(workerdata, (errors, results) => {
-            const stringDebug = `${errors} ${JSON.stringify(results)}`;
-            logger.info(stringDebug);
             if (errors) {
                 reject(errors);
             } else {
@@ -149,7 +147,6 @@ function runWorkerSignJwt(workerdata) {
     return Promise.allSettled(arrayPromise)
         .then((results) => {
             results.forEach((result) => logger.info(result.status));
-
             const result = results[0];
             if (result.status === 'fulfilled') {
                 return Promise.resolve(result.value);
@@ -187,9 +184,7 @@ function runWorkerVerifyJwt(workerdata) {
     // atau bulk processing dengan Worker Pool Thread
     const arrayPromise = [];
     const promise = new Promise((resolve, reject) => {
-        workerPoolSignJwt.runTask(workerdata, (errors, results) => {
-            const stringDebug = `${errors} ${results}`;
-            logger.info(stringDebug);
+        workerPoolVerifyJwt.runTask(workerdata, (errors, results) => {
             if (errors) {
                 reject(errors);
             } else {

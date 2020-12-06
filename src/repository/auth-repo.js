@@ -59,7 +59,7 @@ async function getDataUserByUserId(userid) {
     try {
         const userDb = await UserItem.find({ userids: userid }).exec();
         if (userDb && userDb.length > 0) {
-            return Promise.resolve(userDb);
+            return Promise.resolve(userDb[0]);
         }
         return Promise.reject(new Error(`User ID ${userid} tidak ditemukan`));
     } catch (err) {
