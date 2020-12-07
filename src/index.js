@@ -37,18 +37,6 @@ function startServerDebug() {
         .catch((err) => logger.error(err));
 }
 
-// Jika tidak menggunakan MongoDb, bisa jalankan langsung saja
-function runServerNodeJS() {
-    logger.info('Start server Express');
-    if (config.mode === 'production') {
-        // Aktifkan jika ingin mode production
-        startServerCluster();
-    } else {
-        // Aktifkan jika mode development
-        startServerDebug();
-    }
-}
-
 // Jika menggunakan MongoDb atau sejenisnya, dapat menggunakan fungsi ini.
 function runServerNodeJSMongoDb() {
     // Jalankan koneksi ke MongoDb terlebih dahulu sebelum start server

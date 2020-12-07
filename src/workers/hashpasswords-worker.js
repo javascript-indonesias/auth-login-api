@@ -29,8 +29,8 @@ async function createHashArgon(plainPassword) {
     // Membuat hash dengan argon2
     try {
         const hashedPasswords = await argon2.hash(plainPassword, {
-            hashLength: 36,
-            timeCost: 5,
+            hashLength: 64,
+            timeCost: 8,
             type: argon2.argon2id,
         });
         return Promise.resolve(hashedPasswords);

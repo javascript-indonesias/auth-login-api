@@ -23,23 +23,35 @@ module.exports = {
     // Contoh bundle dengan worker thread
     entry: {
         'server.bundle': path.resolve(__dirname, 'src', 'index.js'),
-        'buble-sorts.worker': path.resolve(
+        'comparepassword-worker.js': path.resolve(
             __dirname,
             'src',
             'workers',
-            'buble-sorts.worker.js',
+            'comparepassword-worker.js',
         ),
-        'calc-primes.worker': path.resolve(
+        'hashpasswords-worker.js': path.resolve(
             __dirname,
             'src',
             'workers',
-            'calc-primes.worker.js',
+            'hashpasswords-worker.js',
         ),
-        'workerpool-primes.worker': path.resolve(
+        'signjwt-worker.js': path.resolve(
             __dirname,
             'src',
             'workers',
-            'workerpool-primes.worker.js',
+            'signjwt-worker.js',
+        ),
+        'verifyjwt-worker.js': path.resolve(
+            __dirname,
+            'src',
+            'workers',
+            'verifyjwt-worker.js',
+        ),
+        'workerpool-threads.js': path.resolve(
+            __dirname,
+            'src',
+            'workers',
+            'workerpool-threads.js',
         ),
     },
     target: 'node',

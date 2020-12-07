@@ -10,7 +10,7 @@ let workerPoolHashPassword = null;
 let workerPoolComparePassword = null;
 let workerPoolSignJwt = null;
 let workerPoolVerifyJwt = null;
-let workerPoolPrimes = null;
+const workerPoolPrimes = null;
 const cpuLength = os.cpus().length;
 
 function runWorkerHashPassword(workerdata) {
@@ -232,93 +232,10 @@ function stopAllWorkerPool() {
     logger.info('Close all worker pool threads');
 }
 
-function runWorkerPrimeService(workerData) {
-    return new Promise((resolve, reject) => {
-        const pathWorker = path.join(__dirname, 'calc-primes.worker.js');
-        const worker = new Worker(pathWorker, { workerData });
-        worker.on('message', resolve);
-        worker.on('error', reject);
-        worker.on('exit', (code) => {
-            if (code !== 0) {
-                reject(new Error(`Worker stopped with exit code ${code}`));
-            }
-        });
-    });
-}
-
-function runBubbleSortService(workerData) {
-    return new Promise((resolve, reject) => {
-        const pathWorker = path.join(__dirname, 'buble-sorts.worker.js');
-        const worker = new Worker(pathWorker, {
-            workerData,
-        });
-
-        worker.on('message', resolve);
-        worker.on('error', reject);
-        worker.on('exit', (code) => {
-            if (code !== 0) {
-                reject(new Error(`Worker stopped with exit code ${code}`));
-            }
-        });
-    });
-}
-
-function runWorkerPoolPrimeNumber(workerData) {
-    // Jalankan task sebanyak 10 buah task
-    const pathWorkerPrimepool = path.join(
-        __dirname,
-        'workerpool-primes.worker.js',
-    );
-
-    if (workerPoolPrimes === null) {
-        if (config.mode === 'development') {
-            workerPoolPrimes = new WorkerPool(2, pathWorkerPrimepool);
-        } else {
-            workerPoolPrimes = new WorkerPool(
-                os.cpus().length,
-                pathWorkerPrimepool,
-            );
-        }
-    }
-
-    // Menjalankan task secara banyak sekaligus,
-    // atau bulk processing dengan Worker Pool Thread
-    const arrayPromise = [];
-    for (let i = 0; i < 10; i += 1) {
-        // eslint-disable-next-line no-loop-func
-        const promise = new Promise((resolve, reject) => {
-            workerPoolPrimes.runTask(workerData, (errors, results) => {
-                const stringDebug = `${i} ${errors} ${results}`;
-                logger.info(stringDebug);
-                if (errors) {
-                    reject(errors);
-                } else {
-                    resolve(results);
-                }
-            });
-        });
-        arrayPromise.push(promise);
-    }
-
-    return Promise.allSettled(arrayPromise)
-        .then((results) => {
-            // workerPoolPrimes.close();
-            results.forEach((result) => logger.info(result.status));
-            return Promise.resolve(results);
-        })
-        .catch((error) => {
-            logger.error(error);
-            return Promise.reject(error);
-        });
-}
-
 export {
     runWorkerHashPassword,
     runWorkerComparePassword,
     runWorkerSignJwt,
     runWorkerVerifyJwt,
     stopAllWorkerPool,
-    runWorkerPrimeService,
-    runBubbleSortService,
-    runWorkerPoolPrimeNumber,
 };
