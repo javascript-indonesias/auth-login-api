@@ -52,7 +52,6 @@ async function createJWTSignUp(usermodel, res) {
 
         res.status(200).json({
             message: 'Sukses',
-            // eslint-disable-next-line no-underscore-dangle
             id: usermodel.id,
             email: usermodel.email,
             accesstoken: tokenData.accesstoken,
@@ -108,7 +107,7 @@ async function createDataPengguna(email, password, res) {
         }
     } else {
         // Gagal membuat hashed password
-        errObject = handleErrorSignup(new Error('Gagal hashed password'));
+        errObject = handleErrorSignup(new Error('Gagal mengolah kata sandi'));
     }
 
     if (userItemDatabase) {
@@ -118,7 +117,11 @@ async function createDataPengguna(email, password, res) {
 
     // Kirim response error jika terdapat error
     if (errObject.email || errObject.password) {
-        handleResponseError(res, { error: errObject });
+        handleResponseError(res, {
+            message:
+                'Ditemukan kesalahan dalam mengolah data email dan kata sandi',
+            error: errObject,
+        });
     }
 }
 
@@ -139,7 +142,10 @@ async function authSignupController(req, res) {
                 errpassword: passwordValidResult.errors,
             });
 
-            handleResponseError(res, { error: errorValidationObject });
+            handleResponseError(res, {
+                message: 'Data tidak sesuai dan tidak valid',
+                error: errorValidationObject,
+            });
         }
 
         // Jika tidak ditemui error validasi lanjutkan ke proses selanjutnya

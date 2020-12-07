@@ -74,12 +74,6 @@ async function comparePasswordUserWorker(workerdata, res) {
     // Jalankan worker thread untuk komparasi password
     try {
         const resultCompareData = await runWorkerComparePassword(workerdata);
-        logger.info(
-            `Hasil komparasi password selesai ${JSON.stringify(
-                resultCompareData,
-            )}`,
-        );
-
         const isPasswordOk = resultCompareData.result;
         if (isPasswordOk === true) {
             // Pengguna ada di database dan compare password berhasil
@@ -87,20 +81,18 @@ async function comparePasswordUserWorker(workerdata, res) {
             createJWTLogin(res);
         } else {
             // Password salah dan tidak benar
-            const error = new Error(
-                'Kata sandi tidak cocok dan sesuai dengan akun ini',
-            );
+            const error = new Error('Kata sandi tidak cocok dengan akun ini');
             error.status = 100;
             const errorObject = handleErrorLoginDatabase(error);
 
             handleResponseError(res, {
-                message: 'Kata sandi tidak cocok dan sesuai dengan akun ini',
+                message: 'Kata sandi tidak cocok dengan akun ini',
                 error: errorObject,
             });
         }
     } catch (err) {
         logger.error(`Error compare password ${err.stack}`);
-        const error = new Error('Kata sandi tidak sama');
+        const error = new Error('Kata sandi tidak cocok dengan akun ini');
         error.status = 100;
         error.stack = err;
         const errorObject = handleErrorLoginDatabase(error);
@@ -119,7 +111,6 @@ async function getUserDataFromDatabase(email, password, res) {
         logger.warn(JSON.stringify(resultUserData));
         if (resultUserData) {
             // Konversi nilai id dari ObjectID ke bentuk String
-            // eslint-disable-next-line no-underscore-dangle
             // const userID = resultUserData._id.toString();
             userItemDatabase = {
                 email: resultUserData.email,
@@ -173,7 +164,7 @@ async function authLoginController(req, res) {
 
             // Kirim response balikan error
             handleResponseError(res, {
-                message: 'Gagal mengolah permintaan',
+                message: 'Data tidak sesuai dan tidak valid',
                 error: errorObject,
             });
         } else {
@@ -184,7 +175,7 @@ async function authLoginController(req, res) {
         logger.error(`Error data ${JSON.stringify(err.stack)}`);
 
         handleResponseError(res, {
-            message: 'Ditemukan kesalahan dalam mengelola request',
+            message: 'Ditemukan kesalahan dalam mengelola permintaan data',
             errors: JSON.stringify(err.stack),
         });
     }

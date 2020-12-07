@@ -104,7 +104,7 @@ function handleErrorSignup(error) {
     }
 
     if (
-        errorMessage.includes('gagal hashed') ||
+        errorMessage.includes('mengolah kata sandi') ||
         errorMessage.includes('simpan database')
     ) {
         errorObject.email = 'Ditemukan kesalahan dalam menyimpan data pengguna';
