@@ -19,14 +19,21 @@ function requireAuthTokenMiddleware(req, res, next) {
                         tokenobject,
                     )}`,
                 );
+
                 next();
             })
             .catch((errors) => {
-                logger.error(`Error verifikasi data ${JSON.stringify(errors)}`);
+                logger.error(
+                    `Error verifikasi data requireAuthTokenMiddleware ${JSON.stringify(
+                        errors,
+                    )}`,
+                );
+                res.cookie('jwtToken', '', { maxAge: 1000 });
                 res.redirect('/login');
             });
     } else {
         // Redirect ke halaman login jika tidak ada token
+        res.cookie('jwtToken', '', { maxAge: 1000 });
         res.redirect('/login');
     }
 }
@@ -39,13 +46,19 @@ function checkStatusLoginUserMiddleware(req, res, next) {
         const workerData = { tokenjwt, secretjwt };
         runWorkerVerifyJwt(workerData)
             .then((decodedtokenobject) => {
-                // Sukses verifikasi JSON lanjutkan ke router berikutnya
+                const errorToken = decodedtokenobject.error;
                 logger.info(
-                    `Sukses verifikasi token cek status login ${JSON.stringify(
+                    `Hasil verifikasi token cek status login ${JSON.stringify(
                         decodedtokenobject,
                     )}`,
                 );
 
+                // Ada kesalahan dalam validasi token
+                if (errorToken !== null) {
+                    return Promise.reject(new Error('Token tidak valid'));
+                }
+
+                // Sukses verifikasi JSON lanjutkan ke router berikutnya
                 // Data token ditemukan, ambil id nya.
                 const userid = decodedtokenobject.token.id;
                 return getDataUserByUserId(userid);
@@ -61,7 +74,12 @@ function checkStatusLoginUserMiddleware(req, res, next) {
                 next();
             })
             .catch((errors) => {
-                logger.error(`Error verifikasi data ${JSON.stringify(errors)}`);
+                logger.error(
+                    `Error verifikasi data checkStatusLoginUserMiddleware ${JSON.stringify(
+                        errors,
+                    )} ${errors}`,
+                );
+                res.cookie('jwtToken', '', { maxAge: 1000 });
                 res.redirect('/login');
             });
     } else {
