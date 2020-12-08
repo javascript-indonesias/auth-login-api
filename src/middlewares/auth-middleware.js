@@ -11,6 +11,7 @@ function redirectLogout(res) {
 
 function requireAuthTokenMiddleware(req, res, next) {
     // Cek token apakah masih berlaku atau tidak
+    // Sebagai router guard dalam navigasi halaman tertentu
     const tokenjwt = req.cookies.jwtToken;
 
     // Cek apakah token tersedia atau tidak
@@ -22,7 +23,7 @@ function requireAuthTokenMiddleware(req, res, next) {
                 const errorToken = tokenobject.error;
                 // Sukses verifikasi JSON lanjutkan ke router berikutnya
                 logger.info(
-                    `Sukses verifikasi token data ${JSON.stringify(
+                    `Selesai verifikasi token data ${JSON.stringify(
                         tokenobject,
                     )}`,
                 );
@@ -50,6 +51,7 @@ function requireAuthTokenMiddleware(req, res, next) {
 
 function checkStatusLoginUserMiddleware(req, res, next) {
     // Cek status user apakah login atau tidak
+    // Untuk conditional rendering di dalam view EJS nya.
     const tokenjwt = req.cookies.jwtToken;
     if (tokenjwt) {
         // Lakukan proses verifikasi token
