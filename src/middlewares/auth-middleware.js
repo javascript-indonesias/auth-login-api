@@ -3,6 +3,12 @@ import { getDataUserByUserId } from '../repository/auth-repo';
 import { secretjwt } from '../../config';
 import logger from '../utils/config-winston';
 
+function redirectLogout(res) {
+    // Redirect ke halaman login
+    res.cookie('jwtToken', '', { maxAge: 500 });
+    res.redirect('/login');
+}
+
 function requireAuthTokenMiddleware(req, res, next) {
     // Cek token apakah masih berlaku atau tidak
     const tokenjwt = req.cookies.jwtToken;
@@ -13,6 +19,7 @@ function requireAuthTokenMiddleware(req, res, next) {
         const workerData = { tokenjwt, secretjwt };
         runWorkerVerifyJwt(workerData)
             .then((tokenobject) => {
+                const errorToken = tokenobject.error;
                 // Sukses verifikasi JSON lanjutkan ke router berikutnya
                 logger.info(
                     `Sukses verifikasi token data ${JSON.stringify(
@@ -20,7 +27,11 @@ function requireAuthTokenMiddleware(req, res, next) {
                     )}`,
                 );
 
-                next();
+                if (errorToken !== null) {
+                    redirectLogout(res);
+                } else {
+                    next();
+                }
             })
             .catch((errors) => {
                 logger.error(
@@ -28,13 +39,12 @@ function requireAuthTokenMiddleware(req, res, next) {
                         errors,
                     )}`,
                 );
-                res.cookie('jwtToken', '', { maxAge: 1000 });
-                res.redirect('/login');
+
+                redirectLogout(res);
             });
     } else {
         // Redirect ke halaman login jika tidak ada token
-        res.cookie('jwtToken', '', { maxAge: 1000 });
-        res.redirect('/login');
+        redirectLogout(res);
     }
 }
 
@@ -79,8 +89,8 @@ function checkStatusLoginUserMiddleware(req, res, next) {
                         errors,
                     )} ${errors}`,
                 );
-                res.cookie('jwtToken', '', { maxAge: 1000 });
-                res.redirect('/login');
+                res.locals.user = {};
+                next();
             });
     } else {
         res.locals.user = {};
