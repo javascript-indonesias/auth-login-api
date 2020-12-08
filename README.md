@@ -1,17 +1,17 @@
-# Node JS Express Boilerplate ES2015++
+# Net Ninja Node.js Auth Tutorial (JWT)
 
-Kerangka aplikasi (boilerplate) untuk aplikasi backend REST API berbasis Node JS dengan framework Express JS, Babel, dan ES2015. Dibuat berdasarkan referensi [Kent C. Dodds Blogs](https://kentcdodds.com/blog/how-i-structure-express-apps) yang berjudul **_How I structure Express apps_** dan [Coding Garden with CJ Node JS](https://www.youtube.com/watch?v=nCWE6eonL7k). Kerangka dengan tambahan Linter ESLint dan Prettier Formatter, bundle aplikasi dengan melakukan Webpack, CRUD sederhana dengan MongoDB, Winston Logger, mock data dengan Faker JS, dan contoh penggunaan Worker Thread untuk proses komputasi data yang berat di thread terpisah Node JS.
+Hasil latihan ulang membuat sistem login dan signup dengan sistem JSON Web Token atau JWT. Dibuat berdasarkan dasar tutorial dari latihan Node JS Auth Tutorial channel Youtube Net Ninja, yang dapat dilihat pada link  playlist ini [Net Ninja Node JS Auth Tutorial Link](https://www.youtube.com/playlist?list=PL4cUxeGkcC9iqqESP8335DA5cRFp8loyp). 
 
-Github sumber dari Kent C Dodds adalah disini [https://github.com/kentcdodds/express-app-example](https://github.com/kentcdodds/express-app-example).
+Pada latihan ulang ini, dilakukan optimasi dengan memindahkan proses komputasi berat ke Worker Thread Node JS. Proses komputasi yang dimaksud adalah hashing password dengan Argon dan Bcrypt, dan melakukan Sign JWT serta Verify JWT. Dimana proses tersebut biasanya menghambat "single thread" Node JS jika trafik atau request sudah banyak.
 
-Gthub sumber dari Coding Garden with CJ dapat dilihat disini [https://github.com/CodingGarden/mars-weather-api](https://github.com/CodingGarden/mars-weather-api)
+Kerangka project ini dibuat dengan menggunakan basis Express Simple Boiler Plate yang dapat diunduh pada [link Github berikut](https://github.com/javascript-indonesias/ExpressSimpleBoilerPlate). 
 
 ## Instalasi
 
 Silahkan lakukan clone project ini dengan cara mengunduh dari menu Code > Zip di halaman Github ini. Atau lakukan dengan melakukan Git Clone project dengan perintah :
 
 ```sh
-git clone -b master -o github --depth 1 --single-branch https://github.com/javascript-indonesias/ExpressSimpleBoilerPlate.git
+git clone -b master -o github --depth 1 --single-branch https://github.com/javascript-indonesias/auth-login-api.git
 ```
 
 Setelah melakukan clone project atau download project kerangka ini, jalankan perintah ```npm install``` di dalam folder project tersebut.

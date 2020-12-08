@@ -1,7 +1,7 @@
 {
-  "name": "express-simple-boilerplate",
+  "name": "auth-login-api",
   "version": "1.0.0",
-  "description": "Simple boilerplate for Express JS Node JS project.",
+  "description": "Aplikasi latihan sistem auth login dengan JWT.",
   "main": "index.js",
   "engines": {
     "node": "14.15.1"
