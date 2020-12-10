@@ -1,4 +1,3 @@
-import { Worker } from 'worker_threads';
 import path from 'path';
 import os from 'os';
 import logger from '../utils/config-winston';
@@ -10,7 +9,6 @@ let workerPoolHashPassword = null;
 let workerPoolComparePassword = null;
 let workerPoolSignJwt = null;
 let workerPoolVerifyJwt = null;
-const workerPoolPrimes = null;
 const cpuLength = os.cpus().length;
 
 function runWorkerHashPassword(workerdata) {

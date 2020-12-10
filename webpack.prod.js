@@ -69,7 +69,7 @@ module.exports = {
                 extractComments: false,
                 terserOptions: {
                     mangle: true,
-                    output: {
+                    format: {
                         comments: false,
                     },
                 },
