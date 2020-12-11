@@ -1,10 +1,10 @@
 # Net Ninja Node.js Auth Tutorial (JWT)
 
-Hasil latihan ulang membuat sistem login dan signup dengan sistem JSON Web Token atau JWT. Dibuat berdasarkan dasar tutorial dari latihan Node JS Auth Tutorial channel Youtube Net Ninja, yang dapat dilihat pada link  playlist ini [Net Ninja Node JS Auth Tutorial Link](https://www.youtube.com/playlist?list=PL4cUxeGkcC9iqqESP8335DA5cRFp8loyp). 
+Hasil latihan ulang membuat sistem login dan signup dengan sistem JSON Web Token atau JWT. Dibuat berdasarkan dasar tutorial dari latihan Node JS Auth Tutorial channel Youtube Net Ninja, yang dapat dilihat pada link  playlist ini [Net Ninja Node JS Auth Tutorial Link](https://www.youtube.com/playlist?list=PL4cUxeGkcC9iqqESP8335DA5cRFp8loyp).
 
 Pada latihan ulang ini, dilakukan optimasi dengan memindahkan proses komputasi berat ke Worker Thread Node JS. Proses komputasi yang dimaksud adalah hashing password dengan Argon dan Bcrypt, dan melakukan Sign JWT serta Verify JWT. Dimana proses tersebut biasanya menghambat "single thread" Node JS jika trafik atau request sudah banyak.
 
-Kerangka project ini dibuat dengan menggunakan basis Express Simple Boiler Plate yang dapat diunduh pada [link Github berikut](https://github.com/javascript-indonesias/ExpressSimpleBoilerPlate). 
+Kerangka project ini dibuat dengan menggunakan basis Express Simple Boiler Plate yang dapat diunduh pada [link Github berikut](https://github.com/javascript-indonesias/ExpressSimpleBoilerPlate).
 
 ## Instalasi
 
