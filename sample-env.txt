@@ -8,5 +8,9 @@ PORT=3200
 VERSIONAPP="v100"
 MONGODBURI=""
 NODE_ENV="development"
+SECRETJWT=""
+HASHTYPE="bcrypt"
+# HASHTYPE="argon2"
+# Ganti ke mode production jika ingin deploy ke server
 # NODE_ENV="production"
 
