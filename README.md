@@ -4,6 +4,8 @@ Hasil latihan ulang membuat sistem login dan signup dengan sistem JSON Web Token
 
 Pada latihan ulang ini, dilakukan optimasi dengan memindahkan proses komputasi berat ke Worker Thread Node JS. Proses komputasi yang dimaksud adalah hashing password dengan Argon dan Bcrypt, dan melakukan Sign JWT serta Verify JWT. Dimana proses tersebut biasanya menghambat "single thread" Node JS jika trafik atau request sudah banyak.
 
+Jangan lupa untuk membuat file Environment Variables dengan nama ```.env``` agar aplikasi ini dapat berjalan. Untuk parameter yang ada di dalam variabel ```.env``` , silahkan lihat file ```sample-env.txt```.
+
 Kerangka project ini dibuat dengan menggunakan basis Express Simple Boiler Plate yang dapat diunduh pada [link Github berikut](https://github.com/javascript-indonesias/ExpressSimpleBoilerPlate).
 
 ## Instalasi
