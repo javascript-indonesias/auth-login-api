@@ -27,12 +27,8 @@ async function createUserDb(useritem) {
 
     return userItem
         .save()
-        .then((result) => {
-            return Promise.resolve(result);
-        })
-        .catch((err) => {
-            return Promise.reject(err);
-        });
+        .then((result) => Promise.resolve(result))
+        .catch((err) => Promise.reject(err));
 }
 
 async function getDataUser(email) {

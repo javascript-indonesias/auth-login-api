@@ -4,7 +4,7 @@
   "description": "Aplikasi latihan sistem auth login dengan JWT.",
   "main": "index.js",
   "engines": {
-    "node": "14.15.1"
+    "node": "14.15.4"
   },
   "scripts": {
     "build-babel": "babel --delete-dir-on-start --out-dir dist --copy-files --ignore \"**/__tests__/**,**/__mocks__/**\" --no-copy-ignored src",
